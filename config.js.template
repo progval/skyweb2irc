@@ -1,0 +1,13 @@
+
+module.exports = {
+    irc_hostname: 'irc.rezosup.org',
+    irc_port: 6667,
+    irc_tls: false,
+    irc_nick: 'NICK',
+    irc_channel: '#CHANNEL',
+
+    skype_login: 'LOGIN',
+    skype_password: 'PASSWORD',
+
+    skype_conversation_id: 'unknown', // Leave this value 'unknown' if you don't know it. See the README.
+};
