@@ -84,6 +84,21 @@ function setup_irc_to_skype() {
  * Skype to IRC
  **********************************************/
 
+var nick_colors = [
+    "\x0305", "\x0304", "\x0303", "\x0309", "\x0302",
+    "\x0312", "\x0306",   "\x0313", "\x0310", "\x0311"]
+
+function nick_to_color(nick){
+    var hash = 0;
+    var i = nick.length;
+    while (i--) {
+        char = nick.charCodeAt(i);
+        hash += char;
+    }
+    return nick_colors[hash % nick_colors.length];
+}
+
+
 function setup_skype_to_irc() {
     function send_to_irc(message) {
         console.log('Skype -> IRC: ' + message);
@@ -98,7 +113,7 @@ function setup_skype_to_irc() {
             }
             else if (resource.messagetype == 'RichText') {
                 if (author != config.skype_login) {
-                    send_to_irc('<' + author + '> ' + entities.decode(resource.content));
+                    send_to_irc('<' + nick_to_color(author) + author + '\x0f> ' + entities.decode(resource.content));
                 }
             }
             else {
