@@ -10,7 +10,7 @@
 
 ## What is this?
 
-It is a small bot connecting to an IRC channel and a Skype chat.
+It is a small bot relaying messages between an IRC channel and a Skype group chat.
 
 I wrote it because Skype suddenly decided to break its API, so my [skype2irc](https://github.com/boamaod/skype2irc) bot did not work anymore.
 
