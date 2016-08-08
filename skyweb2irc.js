@@ -1,5 +1,6 @@
 var Skyweb = require('skyweb');
 var irc = require('irc');
+var striptags = require('striptags');
 var Entities = require('html-entities').XmlEntities;
 var entities = new Entities();
 
@@ -61,21 +62,26 @@ function connect_to_irc() {
  * IRC to Skype
  **********************************************/
 
+var url_regexp = /(\b(https?|ftp):\/\/[^  ]+)/
+function encode_skype(text) {
+    text = entities.encode(text);
+    return text.replace(url_regexp, '<a href="$1">$1</a>');
+}
+
 function setup_irc_to_skype() {
     function send_to_skype(message) {
         console.log('IRC -> Skype: ' + message);
-        message = entities.encode(message);
         skyweb.sendMessage(config.skype_conversation_id, message);
     }
 
     irc_client.addListener('message' + config.irc_channel, function (from, message) {
-        send_to_skype('<' + from + '> ' + message);
+        send_to_skype('&lt;' + from + '&gt; ' + encode_skype(message));
     });
     irc_client.addListener('join' + config.irc_channel, function (nick, message) {
-        send_to_skype('--> ' + nick + ' joined.')
+        send_to_skype('--&gt; ' + nick + ' joined.');
     });
     irc_client.addListener('part' + config.irc_channel, function (nick, reason, message) {
-        send_to_skype('<-- ' + nick + ' left: ' + reason)
+        send_to_skype('&lt;-- ' + nick + ' left: ' + encode_skype(reason));
     });
 }
 
@@ -98,6 +104,10 @@ function nick_to_color(nick){
     return nick_colors[hash % nick_colors.length];
 }
 
+function decode_skype(text) {
+    return entities.decode(striptags(text));
+}
+
 
 function setup_skype_to_irc() {
     function send_to_irc(message) {
@@ -113,7 +123,7 @@ function setup_skype_to_irc() {
             }
             else if (resource.messagetype == 'RichText') {
                 if (author != config.skype_login) {
-                    send_to_irc('<' + nick_to_color(author) + author + '\x0f> ' + entities.decode(resource.content));
+                    send_to_irc('<' + nick_to_color(author) + author + '\x0f> ' + decode_skype(resource.content));
                 }
             }
             else {

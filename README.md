@@ -2,7 +2,7 @@
 
 ## Install and configure
 
-1. Dependencies: `npm install skyweb irc html-entities`
+1. Dependencies: `npm install skyweb irc html-entities striptags`
 2. `mv config.js.template config.js`
 3. Edit `config.js` to configure it. If you don't know the conversation ID, leave it `unknown`. Otherwise, skip step 4.
 4. Run `nodejs skyweb2irc.js` and send a message in the chat using your Skype client. Copy-paste the value printed by skyweb2irc as the value of `skype_conversation_id`.
