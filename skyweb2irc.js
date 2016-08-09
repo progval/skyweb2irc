@@ -81,7 +81,15 @@ function setup_irc_to_skype() {
         send_to_skype('--&gt; ' + nick + ' joined.');
     });
     irc_client.addListener('part' + config.irc_channel, function (nick, reason, message) {
-        send_to_skype('&lt;-- ' + nick + ' left: ' + encode_skype(reason));
+        if (typeof reason == 'undefined') {
+            send_to_skype('&lt;-- ' + nick + ' left the channel.');
+        }
+        else {
+            send_to_skype('&lt;-- ' + nick + ' left the channel: ' + encode_skype(reason));
+        }
+    });
+    irc_client.addListener('quit', function (nick, reason, channels, message) {
+        send_to_skype('&lt;-- ' + nick + ' left the network: ' + encode_skype(reason));
     });
 }
 
