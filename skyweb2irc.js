@@ -88,6 +88,13 @@ function setup_irc_to_skype() {
             send_to_skype('&lt;-- ' + nick + ' left the channel: ' + encode_skype(reason));
         }
     });
+    irc_client.addListener('topic', function (channel, topic, nick, message) {
+        if (message.rawCommand != 'TOPIC') { // Probably 333
+            // Don't relay the topic when joining the channel.
+            return;
+        }
+        send_to_skype('--- ' + nick + ' changed the topic to: ' + encode_skype(topic));
+    });
     irc_client.addListener('quit', function (nick, reason, channels, message) {
         send_to_skype('&lt;-- ' + nick + ' left the network: ' + encode_skype(reason));
     });
@@ -97,6 +104,8 @@ function setup_irc_to_skype() {
 /**********************************************
  * Skype to IRC
  **********************************************/
+
+var initiator_regexp = /<initiator>8:([^<]+)<\/initiator>/
 
 var nick_colors = [
     "\x0305", "\x0304", "\x0303", "\x0309", "\x0302",
@@ -116,7 +125,6 @@ function decode_skype(text) {
     return entities.decode(striptags(text));
 }
 
-
 function setup_skype_to_irc() {
     function send_to_irc(message) {
         console.log('Skype -> IRC: ' + message);
@@ -133,6 +141,10 @@ function setup_skype_to_irc() {
                 if (author != config.skype_login) {
                     send_to_irc('<' + nick_to_color(author) + author + '\x0f> ' + decode_skype(resource.content));
                 }
+            }
+            else if (resource.messagetype == 'ThreadActivity/TopicUpdate') {
+                author = resource.content.match(initiator_regexp)[1]
+                send_to_irc('--- ' + nick_to_color(author) + author + '\x0f changed the topic to: ' + decode_skype(resource.threadtopic));
             }
             else {
                 send_to_irc('*** Unknown message type: ' + resource.messagetype + ' ***');
