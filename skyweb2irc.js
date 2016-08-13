@@ -68,6 +68,8 @@ function encode_skype(text) {
     return text.replace(url_regexp, '<a href="$1">$1</a>');
 }
 
+var action_regexp = /^ACTION (.*)$/
+
 function setup_irc_to_skype() {
     function send_to_skype(message) {
         console.log('IRC -> Skype: ' + message);
@@ -76,6 +78,13 @@ function setup_irc_to_skype() {
 
     irc_client.addListener('message' + config.irc_channel, function (from, message) {
         send_to_skype('&lt;' + from + '&gt; ' + encode_skype(message));
+    });
+    irc_client.addListener('ctcp-privmsg', function (from, to, text, message) {
+        var res = text.match(action_regexp);
+        if (to != config.irc_channel || !res) {
+            return;
+        }
+        send_to_skype('* ' + from + ' ' + encode_skype(res[1]));
     });
     irc_client.addListener('join' + config.irc_channel, function (nick, message) {
         send_to_skype('--&gt; ' + nick + ' joined.');
