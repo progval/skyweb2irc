@@ -147,12 +147,17 @@ function setup_skype_to_irc() {
                 // Ignore.
             }
             else if (resource.messagetype == 'RichText') {
-                if (author != config.skype_login) {
-                    send_to_irc('<' + nick_to_color(author) + author + '\x0f> ' + decode_skype(resource.content));
+                if (author == config.skype_login) {
+                    return;
                 }
+                var edited = ''
+                if (typeof (resource.skypeeditedid) != 'undefined') {
+                    edited = ' (edited)';
+                }
+                send_to_irc('<' + nick_to_color(author) + author + '\x0f' + edited + '> ' + decode_skype(resource.content));
             }
             else if (resource.messagetype == 'ThreadActivity/TopicUpdate') {
-                author = resource.content.match(initiator_regexp)[1]
+                author = resource.content.match(initiator_regexp)[1];
                 send_to_irc('--- ' + nick_to_color(author) + author + '\x0f changed the topic to: ' + decode_skype(resource.threadtopic));
             }
             else {
