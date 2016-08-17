@@ -115,6 +115,7 @@ function setup_irc_to_skype() {
  **********************************************/
 
 var initiator_regexp = /<initiator>8:([^<]+)<\/initiator>/
+var url_value_regexp = /<value>URL@([^<]+)<\/value>/
 
 var nick_colors = [
     "\x0305", "\x0304", "\x0303", "\x0309", "\x0302",
@@ -147,6 +148,7 @@ function setup_skype_to_irc() {
                 // Ignore.
             }
             else if (resource.messagetype == 'RichText') {
+                console.log(message);
                 if (author == config.skype_login) {
                     return;
                 }
@@ -159,6 +161,11 @@ function setup_skype_to_irc() {
             else if (resource.messagetype == 'ThreadActivity/TopicUpdate') {
                 author = resource.content.match(initiator_regexp)[1];
                 send_to_irc('--- ' + nick_to_color(author) + author + '\x0f changed the topic to: ' + decode_skype(resource.threadtopic));
+            }
+            else if (resource.messagetype == 'ThreadActivity/PictureUpdate') {
+                author = resource.content.match(initiator_regexp)[1];
+                url = resource.content.match(url_value_regexp)[1];
+                send_to_irc('--- ' + nick_to_color(author) + author + '\x0f changed the image to: ' + url);
             }
             else {
                 send_to_irc('*** Unknown message type: ' + resource.messagetype + ' ***');
