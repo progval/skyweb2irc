@@ -134,6 +134,7 @@ var initiator_regexp = /<initiator>8:([^<]+)<\/initiator>/
 
 // Magic thing to get the URL of the group picture
 var url_value_regexp = /<value>URL@([^<]+)<\/value>/
+var uri_object_regexp = /type="([^"]+)" uri="([^"]+)"/
 
 // IRC colors
 var nick_colors = [
@@ -185,6 +186,17 @@ function setup_skype_to_irc() {
                     edited = ' (edited)';
                 }
                 send_to_irc('<' + nick_to_color(author) + author + '\x0f' + edited + '> ' + decode_skype(resource.content));
+            }
+            else if (resource.messagetype == 'RichText/UriObject') {
+                var data = resource.content.match(uri_object_regexp);
+                var type = data[1];
+                var uri = data[2];
+                if (type == 'Picture.1') {
+                    send_to_irc('--- ' + nick_to_color(author) + author + '\x0f sent an image: ' + uri + '/views/imgpsh_fullsize');
+                }
+                else {
+                    send_to_irc('--- ' + nick_to_color(author) + author + '\x0f sent an unknown URI object (' + type + '): ' + uri);
+                }
             }
             else if (resource.messagetype == 'ThreadActivity/TopicUpdate') {
                 // Update of the name of the group.
