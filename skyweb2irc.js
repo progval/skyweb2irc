@@ -154,6 +154,9 @@ function nick_to_color(nick){
 
 // Decode a message from Skype. Basically, remove HTML tags and decode HTML entities.
 function decode_skype(text) {
+    text = text.replace('<i raw_pre="_" raw_post="_">', '_').replace('</i>', '_')
+    text = text.replace('<b raw_pre="*" raw_post="*">', '*').replace('</b>', '*')
+    text = text.replace('<s raw_pre="~" raw_post="~">', '~').replace('</s>', '~')
     return entities.decode(striptags(text));
 }
 
