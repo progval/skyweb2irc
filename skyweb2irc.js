@@ -64,10 +64,26 @@ function connect_to_irc() {
  * IRC to Skype
  **********************************************/
 
-var url_regexp = /(\b(https?|ftp):\/\/[^  ]+)/
+var url_regexp = /(\b(https?|ftp):\/\/[^  ]+)/g
 function encode_skype(text) {
     text = entities.encode(text); // Escape HTML entities
     text = text.replace(url_regexp, '<a href="$1">$1</a>'); // Make links clickable for Skype users.
+    return text;
+}
+
+var bold_re = /\x02(.*?)\x02/g
+var italic_re = /\x1D(.*?)\x1D/g
+var underline_re = /\x1F(.*?)\x1F/g
+var end_bold_re = /\x02(.*)/g
+var end_italic_re = /\x1D(.*)/g
+var end_underline_re = /\x1F(.*)/g
+function mirc_codes_to_html(text) {
+    text = text.replace(bold_re, "<b>$1</b>");
+    text = text.replace(italic_re, "<i>$1</i>");
+    text = text.replace(underline_re, "<u>$1</u>");
+    text = text.replace(end_bold_re, "<b>$1</b>");
+    text = text.replace(end_italic_re, "<i>$1</i>");
+    text = text.replace(end_underline_re, "<u>$1</u>");
     return text;
 }
 
@@ -82,7 +98,7 @@ function setup_irc_to_skype() {
 
     // Callback for when an IRC non-CTCP message is received
     irc_client.addListener('message' + config.irc_channel, function (from, message) {
-        send_to_skype('&lt;' + from + '&gt; ' + encode_skype(message));
+        send_to_skype('&lt;' + from + '&gt; ' + mirc_codes_to_html(encode_skype(message)));
     });
 
     // Callback for when a CTCP message is received, eg. ACTION (aka. /me)
