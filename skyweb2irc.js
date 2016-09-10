@@ -156,8 +156,9 @@ function setup_irc_to_skype() {
  * Skype to IRC
  **********************************************/
 
-// Magic thing in the content of a topic/picture update
+// Magic thing in some actions, like topic/picture update or kick/joins
 var initiator_regexp = /<initiator>8:([^<]+)<\/initiator>/
+var target_regexp = /<target>8:([^<]+)<\/target>/
 
 // Magic thing to get the URL of the group picture
 var url_value_regexp = /<value>URL@([^<]+)<\/value>/
@@ -238,6 +239,18 @@ function setup_skype_to_irc() {
                 author = resource.content.match(initiator_regexp)[1];
                 url = resource.content.match(url_value_regexp)[1];
                 send_to_irc('--- ' + nick_to_color(author) + author + '\x0f changed the image to: ' + url);
+            }
+            else if (resource.messagetype == 'ThreadActivity/AddMember') {
+                // Member added by an other member.
+                initiator = resource.content.match(initiator_regexp)[1];
+                target = resource.content.match(target_regexp)[1];
+                send_to_irc('--> ' + nick_to_color(initiator) + initiator + '\x0f added member ' + nick_to_color(target) + target + '\x0f')
+            }
+            else if (resource.messagetype == 'ThreadActivity/DeleteMember') {
+                // Member left group or was deleted by an other member.
+                initiator = resource.content.match(initiator_regexp)[1];
+                target = resource.content.match(target_regexp)[1];
+                send_to_irc('<-- ' + nick_to_color(initiator) + initiator + '\x0f deleted member ' + nick_to_color(target) + target + '\x0f')
             }
             else {
                 send_to_irc('*** Unknown message type: ' + resource.messagetype + ' ***');
