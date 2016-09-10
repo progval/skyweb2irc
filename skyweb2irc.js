@@ -71,12 +71,19 @@ function encode_skype(text) {
     return text;
 }
 
+function mirc_color_to_html(fg, bg, text) { // foreground, background, contenT
+    // TODO
+    return text;
+}
+
 var bold_re = /\x02(.*?)\x02/g
 var italic_re = /\x1D(.*?)\x1D/g
 var underline_re = /\x1F(.*?)\x1F/g
 var end_bold_re = /\x02(.*)/g
 var end_italic_re = /\x1D(.*)/g
 var end_underline_re = /\x1F(.*)/g
+var color_re = /\x03(\d{1,2})?(,(\d{1,2}))?(.*?)\x0F/g
+var end_color_re = /\x03(\d{1,2})?(,(\d{1,2}))?(.*)/g
 function mirc_codes_to_html(text) {
     text = text.replace(bold_re, "<b>$1</b>");
     text = text.replace(italic_re, "<i>$1</i>");
@@ -84,6 +91,10 @@ function mirc_codes_to_html(text) {
     text = text.replace(end_bold_re, "<b>$1</b>");
     text = text.replace(end_italic_re, "<i>$1</i>");
     text = text.replace(end_underline_re, "<u>$1</u>");
+
+    text = text.replace(color_re, function (match, fg, _, bg, text) { return mirc_color_to_html(fg, bg, text) });
+    text = text.replace(end_color_re, function (match, fg, _, bg, text) { return mirc_color_to_html(fg, bg, text) });
+
     return text;
 }
 
