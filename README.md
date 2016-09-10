@@ -14,6 +14,25 @@ It is a small bot relaying messages between an IRC channel and a Skype group cha
 
 I wrote it because Skype suddenly decided to break its API, so my [skype2irc](https://github.com/boamaod/skype2irc) bot did not work anymore.
 
+## Features
+
+### Skype -> IRC
+
+* text messages, with edits and decoding of format tags
+* image upload (files are not supported, see [#6](https://github.com/ProgVal/skyweb2irc/issues/6))
+* topic and picture update
+* member addition and removal
+* deterministic nick coloration
+
+### IRC -> Skype
+
+* text messages, with URLs, decoding of format characters, and stripping color codes
+* CTCP ACTION (ie. `/me`)
+* channel joins
+* channel parts
+* quits
+* topic updates
+
 ## Why did you write it using node.js?
 
 I found a library for Skype written for node.js, [Skyweb](https://github.com/ShyykoSerhiy/skyweb).
