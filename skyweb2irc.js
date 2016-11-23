@@ -37,10 +37,24 @@ function main() {
             connect_to_irc();
             setup_irc_to_skype();
             setup_skype_to_irc();
+            setInterval(reconnect_skype, 30*60*1000); // reconnect to skyweb every 30 minutes
         }
     }
 }
 main();
+
+function reconnect_skype() {
+    console.log('Reinitializing Skyweb (upkeep).');
+    var new_skyweb = new Skyweb();
+    new_skyweb.login(config.skype_login, config.skype_password).then(function (skypeAccount) {
+        console.log('Skyweb reinitialized.');
+        skype_account = skypeAccount;
+        var old_skyweb = skyweb;
+        skyweb = new_skyweb;
+        setup_skype_to_irc();
+        old_skyweb.messagesCallback = undefined;
+    });
+}
 
 /**********************************************
  * Connect to IRC
