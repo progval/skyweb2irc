@@ -78,7 +78,8 @@ function connect_to_irc() {
  * IRC to Skype
  **********************************************/
 
-var url_regexp = /(\b(https?|ftp):\/\/[^  ]+)/g
+// the & is for &gt; , which is likely to be an URL delimiter (RFC 2396)
+var url_regexp = /(\b(https?|ftp):\/\/[^  ">&]+)/g
 function encode_skype(text) {
     text = entities.encode(text); // Escape HTML entities
     text = text.replace(url_regexp, '<a href="$1">$1</a>'); // Make links clickable for Skype users.
