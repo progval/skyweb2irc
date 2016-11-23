@@ -231,7 +231,11 @@ function setup_skype_to_irc() {
                     // This message is an edit of a previous message by the same author.
                     edited = ' (edited)';
                 }
-                send_to_irc('<' + nick_to_color(author) + author + '\x0f' + edited + '> ' + decode_skype(resource.content));
+                content = resource.content;
+                if (typeof (content) == 'undefined') {
+                    content = '';
+                }
+                send_to_irc('<' + nick_to_color(author) + author + '\x0f' + edited + '> ' + decode_skype(content));
             }
             else if (resource.messagetype == 'RichText/UriObject') {
                 var data = resource.content.match(uri_object_regexp);
