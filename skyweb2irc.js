@@ -221,7 +221,7 @@ function setup_skype_to_irc() {
             else if (resource.messagetype == 'RichText') {
                 // Real message
                 console.log(message);
-                if (author == config.skype_login) {
+                if (author == skype_account.selfInfo.username) {
                     // Sent by the bot itself, ignore.
                     return;
                 }
