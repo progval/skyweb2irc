@@ -246,7 +246,7 @@ function setup_skype_to_irc() {
                 var data = content.match(uri_object_regexp);
                 if (data === null) {
                     // Apparently, this happens in some cases of image deletion, but not all
-                    send_to_irc('--- ' + nick_to_color(author) + author + '\x0f deleted an URI object.");
+                    send_to_irc('--- ' + nick_to_color(author) + author + '\x0f deleted an URI object.');
                 }
                 else {
                     var type = data[1];
