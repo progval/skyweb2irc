@@ -141,6 +141,11 @@ function setup_irc_to_skype() {
         send_to_skype('--&gt; ' + nick + ' joined.');
     });
 
+    // Callback for when a user is kicked from the channel.
+    irc_client.addListener('kick' + config.irc_channel, function (nick, by, reason, message) {
+        send_to_skype('&lt;-- ' + nick + ' was kicked by ' + by + ' (' + reason + ')');
+    });
+
     // Callback for when a user leaves a channel.
     irc_client.addListener('part' + config.irc_channel, function (nick, reason, message) {
         if (typeof reason == 'undefined') {
