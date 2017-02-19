@@ -9,5 +9,7 @@ module.exports = {
     skype_login: 'LOGIN',
     skype_password: 'PASSWORD',
 
+    use_skype_realname: false,
+
     skype_conversation_id: 'unknown', // Leave this value 'unknown' if you don't know it. See the README.
 };

@@ -184,6 +184,9 @@ var target_regexp = /<target>8:([^<]+)<\/target>/
 var url_value_regexp = /<value>URL@([^<]+)<\/value>/
 var uri_object_regexp = /type="([^"]+)" uri="([^"]+)"/
 
+// Magic to know if a user has set a realname
+var unset_realname_regexp = /^cid-.*@outlook.com/
+
 // IRC colors
 var nick_colors = [
     "\x0305", "\x0304", "\x0303", "\x0309", "\x0302",
@@ -217,16 +220,25 @@ function setup_skype_to_irc() {
     // Called when something happens on the Skype side.
     skyweb.messagesCallback = (function (messages) {
         messages.forEach(function (message) {
+            console.log(message);
             var resource = message.resource;
-            var author = resource.from.split('/8:', 2)[1]; // XXX: What does that even mean?
+            var author_username = resource.from.split('/8:', 2)[1];
+            var author;
+            if (config.use_skype_realname &&
+                    typeof (resource.imdisplayname) != 'undefined' &&
+                    !unset_realname_regexp.test(resource.imdisplayname)) {
+                author = resource.imdisplayname;
+            }
+            else {
+                author = author_username; // XXX: What does that even mean?
+            }
             if (resource.messagetype == 'Control/Typing') {
                 // Someone is writing something. Ignore.
                 return;
             }
             else if (resource.messagetype == 'RichText') {
                 // Real message
-                console.log(message);
-                if (author == skype_account.selfInfo.username) {
+                if (author_username == skype_account.selfInfo.username) {
                     // Sent by the bot itself, ignore.
                     return;
                 }
