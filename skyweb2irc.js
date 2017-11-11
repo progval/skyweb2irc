@@ -182,7 +182,7 @@ var target_regexp = /<target>8:([^<]+)<\/target>/
 
 // Magic thing to get the URL of the group picture
 var url_value_regexp = /<value>URL@([^<]+)<\/value>/
-var uri_object_regexp = /type="([^"]+)" uri="([^"]+)"/
+var uri_object_regexp = /url_thumbnail="([^"]+)"/
 
 // Magic to know if a user has set a realname
 var unset_realname_regexp = /^cid-.*@outlook.com/
@@ -270,14 +270,8 @@ function setup_skype_to_irc() {
                     send_to_irc('--- ' + nick_to_color(author) + author + '\x0f deleted an URI object.');
                 }
                 else {
-                    var type = data[1];
-                    var uri = data[2];
-                    if (type == 'Picture.1') {
-                        send_to_irc('--- ' + nick_to_color(author) + author + '\x0f sent an image: ' + uri + '/views/imgpsh_fullsize');
-                    }
-                    else {
-                        send_to_irc('--- ' + nick_to_color(author) + author + '\x0f sent an unknown URI object (' + type + '): ' + uri);
-                    }
+                    var uri = data[1];
+                    send_to_irc('--- ' + nick_to_color(author) + author + '\x0f sent an image: ' + uri.replace('imgt1_anim', 'imgpsh_fullsize'));
                 }
             }
             else if (resource.messagetype == 'ThreadActivity/TopicUpdate') {
