@@ -236,6 +236,10 @@ function setup_skype_to_irc() {
                 // Someone is writing something. Ignore.
                 return;
             }
+            else if (resource.messagetype == 'Control/ClearTyping') {
+                // Someone stopped writing. Ignore.
+                return;
+            }
             else if (resource.messagetype == 'RichText') {
                 // Real message
                 if (author_username == skype_account.selfInfo.username) {
