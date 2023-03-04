@@ -1,5 +1,11 @@
 # Skyweb 2 IRC
 
+## Current status
+
+This bridge stopped working in 2020 following a change in the skype web API.
+
+I rewrote it from scratch in Python, as a Limnoria plugin: https://github.com/ProgVal/Supybot-plugins/tree/master/SkypeRelay
+
 ## Install and configure
 
 1. Dependencies: `npm install skyweb irc html-entities striptags`
